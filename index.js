@@ -7,6 +7,7 @@ const sendWxWork = require('./src/sendWxWork')
 const getPoint = require('./src/getPoint');
 
 const { autoGame } = require('./src/games/autoRun');
+const collect_bugs = require('./src/collectBugs');
 
 (async () => {
   // 上次分数
@@ -54,6 +55,18 @@ const { autoGame } = require('./src/games/autoRun');
 
   console.log(dip_res);
 
+  let today_bug_count = 0;
+  let total_bug_count = 0;
+  let collect_error = '';
+
+  try {
+    [today_bug_count, total_bug_count] = await collect_bugs();
+  } catch (error) {
+    collect_error = error;
+  }
+
+  console.log(`今日收集Bug: ${today_bug_count}, 当前总Bug: ${total_bug_count}`)
+
   try {
     const html = `
       <h1 style="text-align: center">自动签到通知</h1>
@@ -62,7 +75,10 @@ const { autoGame } = require('./src/games/autoRun');
       <p style="text-indent: 2em">较昨日增长：${now_score - yesterday_score}</p>
       <p style="text-indent: 2em">签到结果：${sign_res}</p>
       <p style="text-indent: 2em">抽奖结果：${draw_res}</p>
-      <p style="text-indent: 2em">游戏结果：${game_res}</p><br/>
+      <p style="text-indent: 2em">游戏结果：${game_res}</p>
+      <p style="text-indent: 2em">当前Bug: ${today_bug_count + total_bug_count}</p>
+      <p style="text-indent: 2em">较昨日增长：${today_bug_count}</p>
+      <br/>
     `;
 
     // console.log(html);
