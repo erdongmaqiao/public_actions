@@ -59,7 +59,7 @@ async function collect_bugs() {
       }
     }))
 
-    const r = ret?.some(res => res.err_no !== 0)
+    const r = ret.some(res => res.err_no !== 0)
     if (r) return Promise.reject('采集Bug异常')
   }
 }
